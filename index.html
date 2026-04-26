@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Premium UPI Payment Portal - Live & Secure</title>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #0f172a;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); }
+
+        /* Navbar */
+        .navbar { background: var(--dark); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; color: white; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100;}
+        .navbar h2 { font-size: 1.4rem; display: flex; align-items: center; gap: 8px; margin: 0;}
+        .nav-buttons { display: flex; gap: 10px; align-items: center; }
+        .nav-buttons button { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 12px; border-radius: 6px; cursor: pointer; transition: 0.3s; font-weight: 500; font-size: 0.9rem;}
+        .nav-buttons button:hover, .nav-buttons button.active { background: var(--primary); border-color: var(--primary); }
+        #btnLogout { background: rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.5); color: #fca5a5; display: none; }
+        #btnLogout:hover { background: var(--danger); color: white; border-color: var(--danger); }
+
+        /* Layout */
+        .container { max-width: 1000px; margin: 20px auto; padding: 0 15px; display: none; }
+        .container.active { display: block; animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Cards */
+        .card { background: var(--card-bg); border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #e2e8f0; }
+        .card-title { font-size: 1.2rem; font-weight: 600; color: var(--dark); margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #f1f5f9; display: flex; align-items: center; gap: 10px; }
+
+        /* Payment Section Specifics */
+        .payment-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 20px; }
+        @media (max-width: 768px) { .payment-grid { grid-template-columns: 1fr; } }
+
+        /* QR Code Scanner Area */
+        .qr-section { text-align: center; background: #f8fafc; border: 2px dashed #cbd5e1; }
+        .qr-image-wrapper { background: white; padding: 15px; border-radius: 10px; display: inline-block; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin: 10px 0; border: 2px solid var(--primary); position: relative; overflow: hidden; }
+        .qr-image-wrapper::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: rgba(79, 70, 229, 0.8); box-shadow: 0 0 10px var(--primary); animation: scan 2s infinite linear; }
+        @keyframes scan { 0% { top: 0; } 50% { top: 100%; } 100% { top: 0; } }
+        .upi-id-box { background: rgba(79, 70, 229, 0.1); color: var(--primary); padding: 10px; border-radius: 6px; font-weight: 600; font-size: 1rem; letter-spacing: 0.5px; }
+
+        /* Forms */
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-weight: 500; margin-bottom: 6px; color: var(--text-main); font-size: 0.9rem; }
+        .form-control { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem; transition: 0.3s; background: #fff; }
+        .form-control:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79,70,229,0.1); }
+        
+        .file-upload-wrapper { position: relative; border: 2px dashed #cbd5e1; border-radius: 8px; padding: 20px; text-align: center; cursor: pointer; transition: 0.3s; background: #f8fafc; }
+        .file-upload-wrapper:hover { border-color: var(--primary); background: rgba(79,70,229,0.02); }
+        .file-upload-wrapper input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+        .file-upload-text { color: var(--text-muted); font-size: 0.9rem; }
+        .file-upload-text i { font-size: 2rem; color: var(--primary); margin-bottom: 10px; display: block; }
+        
+        .btn { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(79,70,229,0.2); }
+        .btn-disabled { opacity: 0.7; cursor: not-allowed; }
+
+        /* Status Badges */
+        .badge { padding: 5px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap;}
+        .badge-pending { background: rgba(245, 158, 11, 0.1); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.3); }
+        .badge-verified { background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
+        .badge-rejected { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); }
+
+        /* Tables */
+        .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        table { width: 100%; border-collapse: collapse; min-width: 500px; }
+        th { background: #f1f5f9; color: var(--text-muted); text-transform: uppercase; font-size: 0.8rem; padding: 12px 10px; text-align: left; }
+        td { padding: 12px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: middle; color: var(--text-main); font-size: 0.9rem; }
+        .tx-img { width: 45px; height: 45px; border-radius: 6px; object-fit: cover; cursor: pointer; border: 1px solid #cbd5e1; transition: 0.2s;}
+        .tx-img:hover { transform: scale(1.1); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+
+        /* Admin Action Buttons */
+        .action-btns { display: flex; gap: 8px; }
+        .btn-sm { padding: 8px 12px; font-size: 0.85rem; border-radius: 6px; border: none; cursor: pointer; color: white; font-weight: 600; display:flex; align-items:center; gap:5px;}
+        .btn-approve { background: var(--success); } .btn-approve:hover { background: #059669; }
+        .btn-reject { background: var(--danger); } .btn-reject:hover { background: #dc2626; }
+
+        /* Modals (Image Preview & Login) */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; backdrop-filter: blur(5px);}
+        .modal img { max-width: 100%; max-height: 85vh; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        .close-modal { position: absolute; top: 20px; right: 20px; color: white; font-size: 2rem; cursor: pointer; background: rgba(0,0,0,0.5); width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center;}
+        
+        .login-box { background: white; padding: 30px 20px; border-radius: 12px; width: 100%; max-width: 350px; text-align: center; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .login-box .close-login { position: absolute; top: 10px; right: 15px; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
+
+        /* Toast Notification */
+        .toast { position: fixed; bottom: 20px; right: 20px; left: 20px; background: var(--dark); color: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 12px; transform: translateY(150%); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 9999; max-width: 400px; margin: 0 auto; }
+        .toast.show { transform: translateY(0); }
+        .toast i.success { color: var(--success); font-size:1.2rem;} .toast i.error { color: var(--danger); font-size:1.2rem;}
+
+        /* Hidden Web3Form */
+        #alertForm { display: none; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <h2><i class="fa-solid fa-wallet" style="color: #fbbf24;"></i> VPL Pay</h2>
+        <div class="nav-buttons">
+            <button id="btnUserView" class="active" onclick="switchView('user')">User</button>
+            <button id="btnAdminView" onclick="switchView('admin')">Admin</button>
+            <button id="btnLogout" onclick="adminLogout()"><i class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
+    </nav>
+
+    <form id="alertForm">
+        <input type="hidden" name="access_key" value="50bf72b1-ae10-4338-8d64-97d5319300e8">
+        <input type="hidden" name="subject" value="🚨 Naya Payment Received Hua Hai!">
+        <input type="text" name="Sender_Name" id="alertName">
+        <input type="text" name="Amount" id="alertAmount">
+        <input type="text" name="UTR_Number" id="alertUTR">
+        <button type="submit" id="alertBtn"></button>
+    </form>
+
+    <div id="userPanel" class="container active">
+        <div class="payment-grid">
+            
+            <div class="card qr-section">
+                <div class="card-title" style="justify-content: center; border: none; margin-bottom: 0;">
+                    <i class="fa-solid fa-qrcode" style="color: var(--primary);"></i> Scan To Pay
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 10px;">PhonePe, GPay, Paytm se scan karein</p>
+                
+                <div class="qr-image-wrapper">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=9720110030@paytm%26pn=Rashid%20Hussain" alt="UPI QR Code" width="160">
+                </div>
+                
+                <div class="upi-id-box">
+                    <i class="fa-brands fa-google-pay"></i> 9720110030@paytm
+                </div>
+                <p style="margin-top: 10px; font-weight: 600; font-size: 0.95rem; color: var(--text-main);">Merchant: Rashid Hussain</p>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <i class="fa-solid fa-cloud-arrow-up" style="color: var(--primary);"></i> Payment Upload Karein
+                </div>
+                <form id="paymentForm">
+                    <div class="form-group">
+                        <label>Aapka Naam (Sender Name)</label>
+                        <input type="text" id="senderName" class="form-control" placeholder="Jaise: Imran Khan" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Amount Bheja Gaya (₹)</label>
+                        <input type="number" id="amount" class="form-control" placeholder="0.00" required>
+                    </div>
+                    <div class="form-group">
+                        <label>12-Digit UTR / Ref No.</label>
+                        <input type="number" id="utrNumber" class="form-control" placeholder="Eg: 310542389102" required oninput="if(this.value.length > 12) this.value = this.value.slice(0, 12);">
+                    </div>
+                    <div class="form-group">
+                        <label>Payment Screenshot</label>
+                        <div class="file-upload-wrapper" id="dropzone">
+                            <input type="file" id="screenshot" accept="image/*" required>
+                            <div class="file-upload-text" id="fileText">
+                                <i class="fa-solid fa-image"></i>
+                                Click to upload Screenshot
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn" id="submitBtn">
+                        <i class="fa-solid fa-paper-plane"></i> Verify Ke Liye Bhejein
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top: 10px;">
+            <div class="card-title"><i class="fa-solid fa-satellite-dish" style="color:var(--danger)"></i> Live Payment Status</div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>UTR Number</th>
+                            <th>Live Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTableBody">
+                        <tr><td colspan="4" style="text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i> Loading live data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="adminPanel" class="container">
+        <div class="card">
+            <div class="card-title" style="color: var(--primary);">
+                <i class="fa-solid fa-shield-check"></i> Admin Dashboard (Live Sync)
+            </div>
+            <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.9rem;">Jaise hi aap verify karenge, customer ko turant apne phone par update dikh jayega.</p>
+            
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sender</th>
+                            <th>Amt</th>
+                            <th>UTR No.</th>
+                            <th>Proof</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminTableBody">
+                        <tr><td colspan="6" style="text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i> Loading live data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="loginModal">
+        <div class="login-box">
+            <div class="close-login" onclick="closeLoginModal()"><i class="fa-solid fa-xmark"></i></div>
+            <h3 style="color: var(--primary); margin-bottom: 20px;"><i class="fa-solid fa-lock"></i> Admin Login</h3>
+            <div class="form-group">
+                <input type="password" id="adminPin" class="form-control" placeholder="Enter Secure PIN" style="text-align: center; letter-spacing: 5px; font-size: 1.2rem; font-weight: bold;">
+            </div>
+            <button class="btn" onclick="verifyAdminPin()"><i class="fa-solid fa-arrow-right-to-bracket"></i> Login</button>
+            <p id="loginError" style="color: var(--danger); font-size: 0.85rem; margin-top: 10px; display: none;">Galat PIN! Kripya sahi PIN dalein.</p>
+        </div>
+    </div>
+
+    <div class="modal" id="imageModal">
+        <div class="close-modal" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></div>
+        <img id="modalImg" src="" alt="Screenshot">
+    </div>
+
+    <div class="toast" id="toastBox">
+        <i class="fa-solid fa-circle-check success" id="toastIcon"></i>
+        <span id="toastMsg">Action Successful!</span>
+    </div>
+
+    <script>
+        // --- SMART PIN SYSTEM SETTINGS ---
+        // Yahan se aap apna Admin Password/PIN change kar sakte hain
+        const ADMIN_PIN = "142212"; 
+
+        // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyCQdzLEcKxKoMSOBdJ7VxjDXKZupUayoUA",
+    authDomain: "payment-2fa38.firebaseapp.com",
+    projectId: "payment-2fa38",
+    storageBucket: "payment-2fa38.firebasestorage.app",
+    messagingSenderId: "658383501671",
+    appId: "1:658383501671:web:b54fd271b3f59eca25d7c2"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const paymentsRef = db.ref('VPL_Payments');
+
+        // ---------------- VIEW SWITCHING & LOGIN LOGIC ----------------
+        function switchView(view) {
+            if(view === 'admin') {
+                // Check if admin is already logged in during this session
+                if(sessionStorage.getItem('vpl_admin_auth') === 'true') {
+                    showAdminUI();
+                } else {
+                    document.getElementById('loginModal').style.display = 'flex';
+                    document.getElementById('adminPin').focus();
+                }
+            } else {
+                showUserUI();
+            }
+        }
+
+        function verifyAdminPin() {
+            const pinEntered = document.getElementById('adminPin').value;
+            if(pinEntered === ADMIN_PIN) {
+                sessionStorage.setItem('vpl_admin_auth', 'true');
+                closeLoginModal();
+                showAdminUI();
+                showToast("Admin Panel Unlocked!", "success");
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+            }
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').style.display = 'none';
+            document.getElementById('adminPin').value = '';
+            document.getElementById('loginError').style.display = 'none';
+            // If they cancel login, keep them on User tab visually
+            document.getElementById('btnUserView').classList.add('active');
+            document.getElementById('btnAdminView').classList.remove('active');
+        }
+
+        function adminLogout() {
+            sessionStorage.removeItem('vpl_admin_auth');
+            showUserUI();
+            showToast("Admin Logged Out!", "success");
+        }
+
+        function showUserUI() {
+            document.getElementById('btnUserView').classList.add('active');
+            document.getElementById('btnAdminView').classList.remove('active');
+            document.getElementById('userPanel').classList.add('active');
+            document.getElementById('adminPanel').classList.remove('active');
+            document.getElementById('btnLogout').style.display = 'none';
+        }
+
+        function showAdminUI() {
+            document.getElementById('btnAdminView').classList.add('active');
+            document.getElementById('btnUserView').classList.remove('active');
+            document.getElementById('adminPanel').classList.add('active');
+            document.getElementById('userPanel').classList.remove('active');
+            document.getElementById('btnLogout').style.display = 'block';
+        }
+
+
+        // ---------------- IMAGE COMPRESSOR (CRITICAL FOR FIREBASE) ----------------
+        const fileInput = document.getElementById('screenshot');
+        const fileText = document.getElementById('fileText');
+        let compressedBase64 = "";
+
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+
+            fileText.innerHTML = `<i class="fa-solid fa-spinner fa-spin" style="color:var(--warning)"></i> Processing Image...`;
+
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function(event) {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 600;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > MAX_WIDTH) {
+                        height = Math.round((height * MAX_WIDTH) / width);
+                        width = MAX_WIDTH;
+                    }
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    compressedBase64 = canvas.toDataURL('image/jpeg', 0.6);
+                    fileText.innerHTML = `<i class="fa-solid fa-image" style="color:var(--success)"></i> ${file.name} (Ready)`;
+                };
+            };
+        });
+
+        // ---------------- SUBMIT LOGIC (UPLOAD TO FIREBASE) ----------------
+        document.getElementById('paymentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const sender = document.getElementById('senderName').value;
+            const amount = document.getElementById('amount').value;
+            const utr = document.getElementById('utrNumber').value;
+
+            if(utr.length < 12) {
+                showToast("UTR Number 12 digit ka hona chahiye!", "error");
+                return;
+            }
+            if(compressedBase64 === "") {
+                showToast("Kripya image dobara select karein.", "error");
+                return;
+            }
+
+            const btn = document.getElementById('submitBtn');
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Uploading...`;
+            btn.classList.add('btn-disabled');
+
+            const txId = Date.now().toString();
+            const newTx = {
+                id: txId,
+                sender: sender,
+                amount: amount,
+                utr: utr,
+                screenshot: compressedBase64,
+                status: 'Pending',
+                date: new Date().toLocaleString('hi-IN')
+            };
+
+            // Save to Firebase
+            paymentsRef.child(txId).set(newTx)
+            .then(() => {
+                showToast("Payment verification ke liye bhej diya gaya hai!", "success");
+                
+                // Trigger Fast Web3Forms Alert to Admin
+                document.getElementById('alertName').value = sender;
+                document.getElementById('alertAmount').value = "₹" + amount;
+                document.getElementById('alertUTR').value = utr;
+                
+                let formData = new FormData(document.getElementById('alertForm'));
+                fetch('https://api.web3forms.com/submit', { method: 'POST', body: formData }).catch(e=>console.log(e));
+
+                // Reset Form
+                this.reset();
+                fileText.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Click to upload Screenshot`;
+                compressedBase64 = "";
+                btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Verify Ke Liye Bhejein`;
+                btn.classList.remove('btn-disabled');
+            })
+            .catch(error => {
+                showToast("Upload fail ho gaya. Internet check karein.", "error");
+                btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Verify Ke Liye Bhejein`;
+                btn.classList.remove('btn-disabled');
+            });
+        });
+
+        // ---------------- REALTIME SYNC (FIREBASE LISTENER) ----------------
+        paymentsRef.on('value', (snapshot) => {
+            const data = snapshot.val();
+            let transactions = [];
+            if(data) {
+                // Convert Firebase object to Array and sort by newest first
+                transactions = Object.values(data).sort((a,b) => b.id - a.id);
+            }
+            renderUserTable(transactions);
+            renderAdminTable(transactions);
+        });
+
+        // ---------------- RENDER TABLES ----------------
+        function renderUserTable(transactions) {
+            const tbody = document.getElementById('userTableBody');
+            if(transactions.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#94a3b8;">Koi record nahi hai.</td></tr>`;
+                return;
+            }
+            let html = "";
+            transactions.forEach(tx => {
+                let badgeClass = getBadgeClass(tx.status);
+                let icon = getStatusIcon(tx.status);
+                html += `
+                    <tr>
+                        <td><small style="color:var(--text-muted)">${tx.date.split(',')[0]}</small></td>
+                        <td style="font-weight:700; color:var(--dark);">₹${tx.amount}</td>
+                        <td style="font-family:monospace; color:#475569;">${tx.utr}</td>
+                        <td><span class="badge ${badgeClass}">${icon} ${tx.status}</span></td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        }
+
+        function renderAdminTable(transactions) {
+            const tbody = document.getElementById('adminTableBody');
+            if(transactions.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#94a3b8;">No payments received yet.</td></tr>`;
+                return;
+            }
+            let html = "";
+            transactions.forEach(tx => {
+                let badgeClass = getBadgeClass(tx.status);
+                let icon = getStatusIcon(tx.status);
+                
+                let actions = "";
+                if(tx.status === 'Pending') {
+                    actions = `
+                        <div class="action-btns">
+                            <button class="btn-sm btn-approve" onclick="updateStatus('${tx.id}', 'Verified')"><i class="fa-solid fa-check"></i></button>
+                            <button class="btn-sm btn-reject" onclick="updateStatus('${tx.id}', 'Rejected')"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                    `;
+                } else {
+                    actions = `<span class="badge ${badgeClass}">${icon} ${tx.status}</span>`;
+                }
+
+                let imgHtml = tx.screenshot ? `<img src="${tx.screenshot}" class="tx-img" onclick="openModal('${tx.screenshot}')">` : `-`;
+
+                html += `
+                    <tr>
+                        <td style="font-size:0.85rem;"><b>${tx.sender}</b></td>
+                        <td style="color:var(--success); font-weight:700;">₹${tx.amount}</td>
+                        <td style="font-family:monospace; font-size:0.8rem;">${tx.utr}</td>
+                        <td>${imgHtml}</td>
+                        <td><span class="badge ${badgeClass}">${tx.status}</span></td>
+                        <td>${actions}</td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        }
+
+        // ---------------- ADMIN UPDATE LOGIC ----------------
+        function updateStatus(id, newStatus) {
+            paymentsRef.child(id).update({ status: newStatus })
+            .then(() => {
+                showToast(`Payment ${newStatus} Successfully!`, newStatus === 'Verified' ? 'success' : 'error');
+            })
+            .catch(err => {
+                showToast("Update failed!", "error");
+            });
+        }
+
+        // ---------------- UTILS & UI FUNCTIONS ----------------
+        function getBadgeClass(status) {
+            if(status === 'Verified') return 'badge-verified';
+            if(status === 'Rejected') return 'badge-rejected';
+            return 'badge-pending';
+        }
+
+        function getStatusIcon(status) {
+            if(status === 'Verified') return '<i class="fa-solid fa-circle-check"></i>';
+            if(status === 'Rejected') return '<i class="fa-solid fa-circle-xmark"></i>';
+            return '<i class="fa-solid fa-clock"></i>';
+        }
+
+        function openModal(imgSrc) {
+            document.getElementById('modalImg').src = imgSrc;
+            document.getElementById('imageModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+
+        function showToast(msg, type) {
+            const toast = document.getElementById('toastBox');
+            const icon = document.getElementById('toastIcon');
+            
+            document.getElementById('toastMsg').innerText = msg;
+            if(type === 'success') icon.className = 'fa-solid fa-circle-check success';
+            else icon.className = 'fa-solid fa-circle-xmark error';
+
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        }
+
+        // Support Enter key for login
+        document.getElementById("adminPin").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                verifyAdminPin();
+            }
+        });
+    </script>
+</body>
+</html>
