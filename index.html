@@ -14,98 +14,198 @@
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
         :root {
-            --primary: #4f46e5;
-            --primary-hover: #4338ca;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --dark: #0f172a;
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
+            --primary: #38bdf8;
+            --primary-hover: #0284c7;
+            --secondary: #fbbf24;
+            --success: #34d399;
+            --warning: #fbbf24;
+            --danger: #f87171;
+            --dark-glass: rgba(15, 23, 42, 0.6);
+            --card-glass: rgba(255, 255, 255, 0.05);
+            --border-glass: rgba(255, 255, 255, 0.1);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); }
+        
+        /* Vibrant Gradient Background */
+        body { 
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); 
+            color: var(--text-main); 
+            min-height: 100vh;
+        }
 
-        /* Navbar */
-        .navbar { background: var(--dark); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; color: white; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100;}
-        .navbar h2 { font-size: 1.4rem; display: flex; align-items: center; gap: 8px; margin: 0;}
+        /* Navbar with Glassmorphism */
+        .navbar { 
+            background: var(--dark-glass); 
+            backdrop-filter: blur(15px);
+            padding: 15px 20px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            color: white; 
+            border-bottom: 1px solid var(--border-glass);
+            position: sticky; 
+            top: 0; 
+            z-index: 100;
+        }
+        .navbar h2 { font-size: 1.5rem; display: flex; align-items: center; gap: 8px; margin: 0; color: var(--secondary); text-shadow: 0 0 10px rgba(251,191,36,0.3);}
         .nav-buttons { display: flex; gap: 10px; align-items: center; }
-        .nav-buttons button { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 12px; border-radius: 6px; cursor: pointer; transition: 0.3s; font-weight: 500; font-size: 0.9rem;}
-        .nav-buttons button:hover, .nav-buttons button.active { background: var(--primary); border-color: var(--primary); }
-        #btnLogout { background: rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.5); color: #fca5a5; display: none; }
-        #btnLogout:hover { background: var(--danger); color: white; border-color: var(--danger); }
+        .nav-buttons button { 
+            background: rgba(255,255,255,0.05); 
+            border: 1px solid var(--border-glass); 
+            color: white; 
+            padding: 8px 15px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            font-weight: 500; 
+            font-size: 0.95rem;
+        }
+        .nav-buttons button:hover, .nav-buttons button.active { 
+            background: var(--primary); 
+            border-color: var(--primary); 
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+            color: #0f172a;
+            font-weight: 600;
+        }
+        #btnLogout { background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.4); color: #fca5a5; display: none; }
+        #btnLogout:hover { background: var(--danger); color: white; border-color: var(--danger); box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);}
 
         /* Layout */
-        .container { max-width: 1000px; margin: 20px auto; padding: 0 15px; display: none; }
-        .container.active { display: block; animation: fadeIn 0.4s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .container { max-width: 1000px; margin: 30px auto; padding: 0 15px; display: none; }
+        .container.active { display: block; animation: fadeIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Cards */
-        .card { background: var(--card-bg); border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #e2e8f0; }
-        .card-title { font-size: 1.2rem; font-weight: 600; color: var(--dark); margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #f1f5f9; display: flex; align-items: center; gap: 10px; }
+        /* Stylish Cards */
+        .card { 
+            background: var(--card-glass); 
+            backdrop-filter: blur(12px);
+            border-radius: 16px; 
+            padding: 25px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
+            margin-bottom: 25px; 
+            border: 1px solid var(--border-glass); 
+        }
+        .card-title { 
+            font-size: 1.3rem; 
+            font-weight: 600; 
+            color: var(--primary); 
+            margin-bottom: 20px; 
+            padding-bottom: 12px; 
+            border-bottom: 1px solid var(--border-glass); 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+        }
 
         /* Payment Section Specifics */
-        .payment-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 20px; }
+        .payment-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 25px; }
         @media (max-width: 768px) { .payment-grid { grid-template-columns: 1fr; } }
 
-        /* QR Code Scanner Area */
-        .qr-section { text-align: center; background: #f8fafc; border: 2px dashed #cbd5e1; }
-        .qr-image-wrapper { background: white; padding: 15px; border-radius: 10px; display: inline-block; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin: 10px 0; border: 2px solid var(--primary); position: relative; overflow: hidden; }
-        .qr-image-wrapper::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: rgba(79, 70, 229, 0.8); box-shadow: 0 0 10px var(--primary); animation: scan 2s infinite linear; }
+        /* QR Code Scanner Area Glowing */
+        .qr-section { text-align: center; background: rgba(0,0,0,0.2); border: 2px dashed rgba(56, 189, 248, 0.5); }
+        .qr-image-wrapper { 
+            background: white; 
+            padding: 15px; 
+            border-radius: 12px; 
+            display: inline-block; 
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.5); 
+            margin: 15px 0; 
+            border: 3px solid var(--secondary); 
+            position: relative; 
+            overflow: hidden; 
+        }
+        .qr-image-wrapper::after { 
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; 
+            background: rgba(56, 189, 248, 0.9); box-shadow: 0 0 15px var(--primary); 
+            animation: scan 2s infinite linear; 
+        }
         @keyframes scan { 0% { top: 0; } 50% { top: 100%; } 100% { top: 0; } }
-        .upi-id-box { background: rgba(79, 70, 229, 0.1); color: var(--primary); padding: 10px; border-radius: 6px; font-weight: 600; font-size: 1rem; letter-spacing: 0.5px; }
+        .upi-id-box { 
+            background: rgba(251, 191, 36, 0.15); 
+            color: var(--secondary); 
+            padding: 12px; 
+            border-radius: 8px; 
+            font-weight: 600; 
+            font-size: 1.1rem; 
+            letter-spacing: 1px; 
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
 
-        /* Forms */
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-weight: 500; margin-bottom: 6px; color: var(--text-main); font-size: 0.9rem; }
-        .form-control { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem; transition: 0.3s; background: #fff; }
-        .form-control:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79,70,229,0.1); }
+        /* Forms in Dark Mode */
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-weight: 500; margin-bottom: 8px; color: var(--text-muted); font-size: 0.95rem; }
+        .form-control { 
+            width: 100%; padding: 14px; 
+            border: 1px solid var(--border-glass); 
+            border-radius: 8px; font-size: 1rem; 
+            transition: 0.3s; 
+            background: rgba(0,0,0,0.25); 
+            color: white;
+        }
+        .form-control::placeholder { color: #64748b; }
+        .form-control:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2); }
         
-        .file-upload-wrapper { position: relative; border: 2px dashed #cbd5e1; border-radius: 8px; padding: 20px; text-align: center; cursor: pointer; transition: 0.3s; background: #f8fafc; }
-        .file-upload-wrapper:hover { border-color: var(--primary); background: rgba(79,70,229,0.02); }
+        .file-upload-wrapper { 
+            position: relative; border: 2px dashed rgba(255,255,255,0.2); border-radius: 8px; padding: 25px; 
+            text-align: center; cursor: pointer; transition: 0.3s; background: rgba(0,0,0,0.15); 
+        }
+        .file-upload-wrapper:hover { border-color: var(--primary); background: rgba(56, 189, 248, 0.05); }
         .file-upload-wrapper input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-        .file-upload-text { color: var(--text-muted); font-size: 0.9rem; }
-        .file-upload-text i { font-size: 2rem; color: var(--primary); margin-bottom: 10px; display: block; }
+        .file-upload-text { color: var(--text-muted); font-size: 0.95rem; }
+        .file-upload-text i { font-size: 2.5rem; color: var(--primary); margin-bottom: 12px; display: block; }
         
-        .btn { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(79,70,229,0.2); }
+        /* Vibrant Buttons */
+        .btn { 
+            width: 100%; padding: 15px; 
+            background: linear-gradient(135deg, #38bdf8 0%, #3b82f6 100%); 
+            color: #0f172a; border: none; border-radius: 8px; font-size: 1.1rem; 
+            font-weight: 700; cursor: pointer; transition: 0.3s; 
+            display: flex; align-items: center; justify-content: center; gap: 10px; 
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+        }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(56, 189, 248, 0.5); }
         .btn-disabled { opacity: 0.7; cursor: not-allowed; }
 
         /* Status Badges */
-        .badge { padding: 5px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap;}
-        .badge-pending { background: rgba(245, 158, 11, 0.1); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.3); }
-        .badge-verified { background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
-        .badge-rejected { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); }
+        .badge { padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;}
+        .badge-pending { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.4); }
+        .badge-verified { background: rgba(52, 211, 153, 0.15); color: var(--success); border: 1px solid rgba(52, 211, 153, 0.4); }
+        .badge-rejected { background: rgba(248, 113, 113, 0.15); color: var(--danger); border: 1px solid rgba(248, 113, 113, 0.4); }
 
-        /* Tables */
-        .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        table { width: 100%; border-collapse: collapse; min-width: 500px; }
-        th { background: #f1f5f9; color: var(--text-muted); text-transform: uppercase; font-size: 0.8rem; padding: 12px 10px; text-align: left; }
-        td { padding: 12px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: middle; color: var(--text-main); font-size: 0.9rem; }
-        .tx-img { width: 45px; height: 45px; border-radius: 6px; object-fit: cover; cursor: pointer; border: 1px solid #cbd5e1; transition: 0.2s;}
-        .tx-img:hover { transform: scale(1.1); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        /* Premium Tables */
+        .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 8px;}
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        th { background: rgba(0,0,0,0.4); color: var(--secondary); text-transform: uppercase; font-size: 0.85rem; padding: 14px 12px; text-align: left; border-bottom: 1px solid var(--border-glass);}
+        td { padding: 14px 12px; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: middle; color: var(--text-main); font-size: 0.95rem; }
+        tr:hover td { background: rgba(255,255,255,0.02); }
+        .tx-img { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; cursor: pointer; border: 1px solid var(--border-glass); transition: 0.3s;}
+        .tx-img:hover { transform: scale(1.15); box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
 
         /* Admin Action Buttons */
-        .action-btns { display: flex; gap: 8px; }
-        .btn-sm { padding: 8px 12px; font-size: 0.85rem; border-radius: 6px; border: none; cursor: pointer; color: white; font-weight: 600; display:flex; align-items:center; gap:5px;}
-        .btn-approve { background: var(--success); } .btn-approve:hover { background: #059669; }
-        .btn-reject { background: var(--danger); } .btn-reject:hover { background: #dc2626; }
+        .action-btns { display: flex; gap: 10px; }
+        .btn-sm { padding: 8px 12px; font-size: 0.9rem; border-radius: 6px; border: none; cursor: pointer; color: #0f172a; font-weight: 700; display:flex; align-items:center; gap:5px; transition: 0.2s;}
+        .btn-approve { background: var(--success); box-shadow: 0 0 10px rgba(52, 211, 153, 0.3); } 
+        .btn-approve:hover { background: #10b981; transform: scale(1.05);}
+        .btn-reject { background: var(--danger); box-shadow: 0 0 10px rgba(248, 113, 113, 0.3);} 
+        .btn-reject:hover { background: #ef4444; transform: scale(1.05);}
 
         /* Modals (Image Preview & Login) */
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; backdrop-filter: blur(5px);}
-        .modal img { max-width: 100%; max-height: 85vh; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-        .close-modal { position: absolute; top: 20px; right: 20px; color: white; font-size: 2rem; cursor: pointer; background: rgba(0,0,0,0.5); width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center;}
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; backdrop-filter: blur(8px);}
+        .modal img { max-width: 100%; max-height: 85vh; border-radius: 12px; box-shadow: 0 15px 40px rgba(0,0,0,0.6); border: 2px solid var(--border-glass);}
+        .close-modal { position: absolute; top: 25px; right: 25px; color: white; font-size: 1.5rem; cursor: pointer; background: rgba(255,255,255,0.1); width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 1px solid var(--border-glass); transition: 0.3s;}
+        .close-modal:hover { background: var(--danger); border-color: var(--danger); transform: rotate(90deg);}
         
-        .login-box { background: white; padding: 30px 20px; border-radius: 12px; width: 100%; max-width: 350px; text-align: center; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        .login-box .close-login { position: absolute; top: 10px; right: 15px; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
+        .login-box { background: rgba(15, 23, 42, 0.95); padding: 40px 25px; border-radius: 16px; width: 100%; max-width: 380px; text-align: center; position: relative; box-shadow: 0 15px 40px rgba(0,0,0,0.5); border: 1px solid var(--border-glass); backdrop-filter: blur(10px);}
+        .login-box .close-login { position: absolute; top: 15px; right: 15px; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; transition: 0.2s;}
+        .login-box .close-login:hover { color: var(--danger); }
 
         /* Toast Notification */
-        .toast { position: fixed; bottom: 20px; right: 20px; left: 20px; background: var(--dark); color: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 12px; transform: translateY(150%); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 9999; max-width: 400px; margin: 0 auto; }
+        .toast { position: fixed; bottom: 30px; right: 30px; left: 30px; background: rgba(15, 23, 42, 0.95); color: white; padding: 16px 25px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 15px; transform: translateY(150%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 9999; max-width: 400px; margin: 0 auto; border: 1px solid var(--border-glass); backdrop-filter: blur(10px);}
         .toast.show { transform: translateY(0); }
-        .toast i.success { color: var(--success); font-size:1.2rem;} .toast i.error { color: var(--danger); font-size:1.2rem;}
+        .toast i.success { color: var(--success); font-size:1.4rem;} .toast i.error { color: var(--danger); font-size:1.4rem;}
 
         /* Hidden Web3Form */
         #alertForm { display: none; }
@@ -114,17 +214,17 @@
 <body>
 
     <nav class="navbar">
-        <h2><i class="fa-solid fa-wallet" style="color: #fbbf24;"></i> VPL Pay</h2>
+        <h2><i class="fa-solid fa-wallet"></i> VPL Pay</h2>
         <div class="nav-buttons">
-            <button id="btnUserView" class="active" onclick="switchView('user')">User</button>
-            <button id="btnAdminView" onclick="switchView('admin')">Admin</button>
-            <button id="btnLogout" onclick="adminLogout()"><i class="fa-solid fa-right-from-bracket"></i></button>
+            <button id="btnUserView" class="active" onclick="switchView('user')"><i class="fa-solid fa-user"></i> User</button>
+            <button id="btnAdminView" onclick="switchView('admin')"><i class="fa-solid fa-shield-halved"></i> Admin</button>
+            <button id="btnLogout" onclick="adminLogout()"><i class="fa-solid fa-power-off"></i></button>
         </div>
     </nav>
 
     <form id="alertForm">
         <input type="hidden" name="access_key" value="50bf72b1-ae10-4338-8d64-97d5319300e8">
-        <input type="hidden" name="subject" value="🚨 Naya Payment Received Hua Hai!">
+        <input type="hidden" name="subject" value="🚨 Naya VPL Payment Received!">
         <input type="text" name="Sender_Name" id="alertName">
         <input type="text" name="Amount" id="alertAmount">
         <input type="text" name="UTR_Number" id="alertUTR">
@@ -136,23 +236,23 @@
             
             <div class="card qr-section">
                 <div class="card-title" style="justify-content: center; border: none; margin-bottom: 0;">
-                    <i class="fa-solid fa-qrcode" style="color: var(--primary);"></i> Scan To Pay
+                    <i class="fa-solid fa-qrcode"></i> Scan To Pay
                 </div>
-                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 10px;">PhonePe, GPay, Paytm se scan karein</p>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 10px;">PhonePe, GPay, Paytm se scan karein</p>
                 
                 <div class="qr-image-wrapper">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=9720110030@paytm%26pn=Rashid%20Hussain" alt="UPI QR Code" width="160">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=9720110030@paytm%26pn=Rashid%20Hussain" alt="UPI QR Code" width="170">
                 </div>
                 
                 <div class="upi-id-box">
                     <i class="fa-brands fa-google-pay"></i> 9720110030@paytm
                 </div>
-                <p style="margin-top: 10px; font-weight: 600; font-size: 0.95rem; color: var(--text-main);">Merchant: Rashid Hussain</p>
+                <p style="margin-top: 15px; font-weight: 500; font-size: 1rem; color: var(--text-muted);">Merchant: <span style="color: white; font-weight: 600;">Rashid Hussain</span></p>
             </div>
 
             <div class="card">
                 <div class="card-title">
-                    <i class="fa-solid fa-cloud-arrow-up" style="color: var(--primary);"></i> Payment Upload Karein
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Payment Upload Karein
                 </div>
                 <form id="paymentForm">
                     <div class="form-group">
@@ -185,7 +285,7 @@
         </div>
 
         <div class="card" style="margin-top: 10px;">
-            <div class="card-title"><i class="fa-solid fa-satellite-dish" style="color:var(--danger)"></i> Live Payment Status</div>
+            <div class="card-title" style="color: var(--secondary);"><i class="fa-solid fa-satellite-dish"></i> Live Payment Status</div>
             <div class="table-responsive">
                 <table>
                     <thead>
@@ -197,7 +297,7 @@
                         </tr>
                     </thead>
                     <tbody id="userTableBody">
-                        <tr><td colspan="4" style="text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i> Loading live data...</td></tr>
+                        <tr><td colspan="4" style="text-align:center; padding: 30px;"><i class="fa-solid fa-spinner fa-spin" style="color: var(--primary); font-size: 1.5rem;"></i><br><br>Loading live data...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -206,10 +306,10 @@
 
     <div id="adminPanel" class="container">
         <div class="card">
-            <div class="card-title" style="color: var(--primary);">
+            <div class="card-title" style="color: var(--secondary);">
                 <i class="fa-solid fa-shield-check"></i> Admin Dashboard (Live Sync)
             </div>
-            <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.9rem;">Jaise hi aap verify karenge, customer ko turant apne phone par update dikh jayega.</p>
+            <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.95rem;">Jaise hi aap verify karenge, customer ko turant apne phone par update dikh jayega.</p>
             
             <div class="table-responsive">
                 <table>
@@ -224,7 +324,7 @@
                         </tr>
                     </thead>
                     <tbody id="adminTableBody">
-                        <tr><td colspan="6" style="text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i> Loading live data...</td></tr>
+                        <tr><td colspan="6" style="text-align:center; padding: 30px;"><i class="fa-solid fa-spinner fa-spin" style="color: var(--primary); font-size: 1.5rem;"></i><br><br>Loading live data...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -234,12 +334,12 @@
     <div class="modal" id="loginModal">
         <div class="login-box">
             <div class="close-login" onclick="closeLoginModal()"><i class="fa-solid fa-xmark"></i></div>
-            <h3 style="color: var(--primary); margin-bottom: 20px;"><i class="fa-solid fa-lock"></i> Admin Login</h3>
+            <h3 style="color: var(--primary); margin-bottom: 25px; font-size: 1.5rem;"><i class="fa-solid fa-lock"></i> Admin Login</h3>
             <div class="form-group">
-                <input type="password" id="adminPin" class="form-control" placeholder="Enter Secure PIN" style="text-align: center; letter-spacing: 5px; font-size: 1.2rem; font-weight: bold;">
+                <input type="password" id="adminPin" class="form-control" placeholder="Enter Secure PIN" style="text-align: center; letter-spacing: 8px; font-size: 1.3rem; font-weight: bold; background: rgba(0,0,0,0.4);">
             </div>
-            <button class="btn" onclick="verifyAdminPin()"><i class="fa-solid fa-arrow-right-to-bracket"></i> Login</button>
-            <p id="loginError" style="color: var(--danger); font-size: 0.85rem; margin-top: 10px; display: none;">Galat PIN! Kripya sahi PIN dalein.</p>
+            <button class="btn" onclick="verifyAdminPin()" style="margin-top: 20px;"><i class="fa-solid fa-arrow-right-to-bracket"></i> Unlock Panel</button>
+            <p id="loginError" style="color: var(--danger); font-size: 0.9rem; margin-top: 15px; display: none;"><i class="fa-solid fa-circle-exclamation"></i> Galat PIN! Kripya sahi PIN dalein.</p>
         </div>
     </div>
 
@@ -258,9 +358,9 @@
         // Yahan se aap apna Admin Password/PIN change kar sakte hain
         const ADMIN_PIN = "142212"; 
 
-        // Your web app's Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyCQdzLEcKxKoMSOBdJ7VxjDXKZupUayoUA",
+        // --- FIREBASE CONFIGURATION ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyCQdzLEcKxKoMSOBdJ7VxjDXKZupUayoUA",
     authDomain: "payment-2fa38.firebaseapp.com",
     projectId: "payment-2fa38",
     storageBucket: "payment-2fa38.firebasestorage.app",
@@ -274,7 +374,6 @@
         // ---------------- VIEW SWITCHING & LOGIN LOGIC ----------------
         function switchView(view) {
             if(view === 'admin') {
-                // Check if admin is already logged in during this session
                 if(sessionStorage.getItem('vpl_admin_auth') === 'true') {
                     showAdminUI();
                 } else {
@@ -302,7 +401,6 @@
             document.getElementById('loginModal').style.display = 'none';
             document.getElementById('adminPin').value = '';
             document.getElementById('loginError').style.display = 'none';
-            // If they cancel login, keep them on User tab visually
             document.getElementById('btnUserView').classList.add('active');
             document.getElementById('btnAdminView').classList.remove('active');
         }
@@ -442,7 +540,7 @@
         function renderUserTable(transactions) {
             const tbody = document.getElementById('userTableBody');
             if(transactions.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#94a3b8;">Koi record nahi hai.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px; color:#64748b;">Koi record nahi hai.</td></tr>`;
                 return;
             }
             let html = "";
@@ -452,8 +550,8 @@
                 html += `
                     <tr>
                         <td><small style="color:var(--text-muted)">${tx.date.split(',')[0]}</small></td>
-                        <td style="font-weight:700; color:var(--dark);">₹${tx.amount}</td>
-                        <td style="font-family:monospace; color:#475569;">${tx.utr}</td>
+                        <td style="font-weight:700; color:var(--success);">₹${tx.amount}</td>
+                        <td style="font-family:monospace; color:var(--secondary);">${tx.utr}</td>
                         <td><span class="badge ${badgeClass}">${icon} ${tx.status}</span></td>
                     </tr>
                 `;
@@ -464,7 +562,7 @@
         function renderAdminTable(transactions) {
             const tbody = document.getElementById('adminTableBody');
             if(transactions.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#94a3b8;">No payments received yet.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px; color:#64748b;">No payments received yet.</td></tr>`;
                 return;
             }
             let html = "";
@@ -476,8 +574,8 @@
                 if(tx.status === 'Pending') {
                     actions = `
                         <div class="action-btns">
-                            <button class="btn-sm btn-approve" onclick="updateStatus('${tx.id}', 'Verified')"><i class="fa-solid fa-check"></i></button>
-                            <button class="btn-sm btn-reject" onclick="updateStatus('${tx.id}', 'Rejected')"><i class="fa-solid fa-xmark"></i></button>
+                            <button class="btn-sm btn-approve" onclick="updateStatus('${tx.id}', 'Verified')" title="Approve"><i class="fa-solid fa-check"></i></button>
+                            <button class="btn-sm btn-reject" onclick="updateStatus('${tx.id}', 'Rejected')" title="Reject"><i class="fa-solid fa-xmark"></i></button>
                         </div>
                     `;
                 } else {
@@ -488,9 +586,9 @@
 
                 html += `
                     <tr>
-                        <td style="font-size:0.85rem;"><b>${tx.sender}</b></td>
-                        <td style="color:var(--success); font-weight:700;">₹${tx.amount}</td>
-                        <td style="font-family:monospace; font-size:0.8rem;">${tx.utr}</td>
+                        <td style="font-size:0.95rem;"><b>${tx.sender}</b></td>
+                        <td style="color:var(--success); font-weight:700; font-size:1.1rem;">₹${tx.amount}</td>
+                        <td style="font-family:monospace; color:var(--secondary);">${tx.utr}</td>
                         <td>${imgHtml}</td>
                         <td><span class="badge ${badgeClass}">${tx.status}</span></td>
                         <td>${actions}</td>
